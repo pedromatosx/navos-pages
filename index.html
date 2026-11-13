@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NavOS — direto ao ponto</title>
+<meta name="description" content="NavOS: o mapa do campus sede da UFCG no celular, com busca por sigla, rota a pé passo a passo e a sua rotina de aulas. Em breve para Android.">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="midia/icone.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+
+<!-- marca:inicio -->
+<svg class="sprite" width="0" height="0" aria-hidden="true" focusable="false">
+  <defs>
+    <!-- Cromo: céu claro em cima, horizonte escuro no meio, chão claro embaixo. O JS desliza o brilho. -->
+    <linearGradient id="cromo" gradientUnits="userSpaceOnUse" x1="0" y1="214" x2="0" y2="440">
+      <stop offset="0" stop-color="#ffffff"/><stop offset=".28" stop-color="#d3d8e0"/><stop offset=".47" stop-color="#868b94"/>
+      <stop offset=".5" stop-color="#1d1d1f"/><stop offset=".56" stop-color="#4a4846"/><stop offset=".8" stop-color="#b3aeaa"/><stop offset="1" stop-color="#f5f5f7"/>
+    </linearGradient>
+    <linearGradient id="cromo-brilho" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="330" y2="0" gradientTransform="translate(400) skewX(-24)">
+      <stop offset="0" stop-color="#9ac8ff" stop-opacity="0"/><stop offset=".4" stop-color="#9ac8ff" stop-opacity=".3"/><stop offset=".5" stop-color="#fff" stop-opacity=".95"/>
+      <stop offset=".6" stop-color="#ffd9a8" stop-opacity=".3"/><stop offset="1" stop-color="#ffd9a8" stop-opacity="0"/>
+    </linearGradient>
+    <g id="marca-icone" fill-rule="evenodd"><path fill="currentColor" d="M 286.6 95.9 C 265.5 97, 250.9 100.7, 234 109.1 C 227.2 112.5, 224.2 114.3, 217.1 119.4 C 188.9 139.4, 169.7 172.9, 165.9 208.8 C 165.3 214.3, 165 227.7, 165.1 250.9 C 165.1 271.6, 165.1 272, 165.6 272.5 C 166 272.8, 167.9 273.4, 171.5 274.4 C 174.5 275.1, 177.3 275.9, 177.8 276 C 178.7 276.3, 189.3 279.2, 192.9 280.1 C 199.5 281.9, 209 284.3, 215.6 286 C 218.8 286.9, 223.8 288.1, 226.8 288.9 C 229.7 289.7, 233.9 290.7, 236 291.3 C 238.1 291.8, 242.6 292.9, 245.9 293.7 C 252.2 295.3, 260.6 297.3, 268.3 299 C 270.8 299.6, 274.1 300.3, 275.5 300.6 C 277.8 301.2, 282.3 302, 289.2 303.1 C 292.7 303.7, 292.6 303.5, 291.6 307.7 C 289.6 316.4, 289.5 329.5, 291.3 339.4 C 292 343.4, 293 347.7, 293.5 348.9 C 293.8 349.8, 293.9 354.2, 294 394.7 L 294.1 439.5 294.9 440.5 C 296.6 442.9, 298.5 443.3, 303.5 442 C 305.1 441.6, 308.2 440.9, 310.5 440.4 C 312.8 439.9, 315.5 439.2, 316.5 439 C 317.5 438.8, 320.8 438, 323.8 437.4 C 326.7 436.7, 332.3 435.4, 336.1 434.5 C 345.7 432.2, 345.7 432.2, 346.4 432.4 C 346.8 432.5, 347.9 433.7, 349.6 435.8 C 351 437.6, 354.5 441.7, 357.4 444.9 C 360.3 448.1, 362.7 451, 362.7 451.2 C 362.8 452.1, 362.6 452.1, 349.6 455.1 C 347.4 455.6, 344.2 456.4, 342.4 456.9 C 337 458.3, 332.8 459.2, 328.4 460.1 C 326 460.6, 322.4 461.4, 320.3 461.9 C 318.1 462.4, 315.4 463, 314.1 463.3 C 312.9 463.5, 310.9 464, 309.8 464.2 C 308.6 464.5, 306.8 464.9, 305.9 465.1 C 304.9 465.3, 302.1 466, 299.6 466.6 C 293.3 468.2, 285.8 469.9, 283 470.4 C 278.4 471.2, 266.1 475.1, 252.6 480 C 250 480.9, 245.2 482.6, 241.9 483.7 C 235.5 485.8, 228.6 488.2, 222.9 490.3 C 221 491, 218.8 491.8, 218.1 492 C 217.4 492.3, 214.6 493.3, 211.9 494.3 C 209.1 495.3, 204.9 496.8, 202.4 497.6 C 195.2 500.1, 193.3 500.8, 186.9 503.1 C 183.6 504.3, 179.9 505.6, 178.8 506.1 C 174.9 507.4, 174.9 507.3, 177 512.1 C 184.1 528.1, 193 540.4, 206.7 552.9 C 212.3 558.1, 219.7 563.3, 227.1 567.3 C 231.9 570, 231.7 570.1, 233.2 565.4 C 237.8 551.4, 246.6 537.8, 257.7 527.4 C 268.6 517.3, 283.1 509.2, 299 504.6 C 300.2 504.3, 302 503.7, 303.2 503.4 C 307.5 502.1, 316.4 500.3, 328.2 498.3 C 344.5 495.4, 352.6 492.8, 361.5 487.2 C 366.8 483.9, 372.9 477.5, 376.4 471.5 C 377.4 469.8, 380.5 462.2, 381.2 459.9 C 381.6 458.5, 382.3 457.9, 383.5 457.9 C 384.5 457.9, 384.7 458.1, 390 463.3 C 392.9 466.3, 396.3 469.4, 397.4 470.3 C 398.5 471.1, 399.8 472.3, 400.4 472.8 C 402.6 474.7, 404.9 474.6, 407.5 472.4 C 408.4 471.7, 410.6 469.8, 412.4 468.1 C 414.3 466.5, 416.3 464.7, 417 464.2 C 417.6 463.6, 419.3 462.1, 420.7 460.7 C 423 458.4, 423.3 458.2, 424.1 458.2 C 425.3 458.2, 426.3 459.1, 426.3 460.2 C 426.3 463.8, 423.4 475.2, 421 481.4 C 419.5 485.2, 414.3 495.4, 412 499 C 404.3 511.2, 392.7 522.3, 380.2 529.5 C 376.1 531.8, 369.9 534.8, 366.6 536 C 365.9 536.3, 364.3 536.9, 363 537.4 C 360.3 538.4, 353.9 540.3, 351.6 540.7 C 350.8 540.9, 349.5 541.2, 348.8 541.4 C 348 541.6, 344.2 542.4, 340.3 543.1 C 318.2 547.3, 311.9 548.9, 303.9 552.4 C 295.3 556, 287.9 561.9, 283.2 568.5 C 280.4 572.6, 276.5 580.6, 276.9 581.9 C 277 582.7, 277.3 582.7, 281.5 583 C 286.2 583.3, 519.1 583.3, 530.8 583 C 549.4 582.5, 563.1 579.2, 578.6 571.5 C 604.9 558.3, 625.4 535.9, 636.3 508.3 C 641.7 494.8, 643.9 485.1, 645 468.8 C 645.3 463.7, 645.4 289.1, 645 288.2 C 644.6 287.1, 644.3 287.1, 640.5 288.2 C 638.5 288.8, 635.4 289.6, 633.5 290.1 C 631.6 290.6, 629.6 291.2, 629 291.4 C 628.4 291.6, 626.8 292, 625.4 292.4 C 624 292.8, 621.2 293.6, 619.1 294.2 C 617.1 294.8, 612.7 296, 609.4 296.9 C 602.1 298.8, 593.6 301.2, 589 302.5 C 587.1 303.1, 584.6 303.8, 583.4 304.1 C 582.1 304.5, 578 305.7, 574.3 306.7 C 570.5 307.8, 566.3 309, 565 309.3 C 556 311.8, 549.6 313.5, 541.1 316 C 539.2 316.6, 536.8 317.3, 535.9 317.5 C 534.9 317.8, 533.5 318.2, 532.6 318.5 C 528.9 319.6, 518.5 322.5, 518.1 322.5 C 517.1 322.5, 517 321.9, 516.7 317 C 516.4 310.4, 515.8 306.7, 514.1 299.7 C 513.4 297, 513.4 296.2, 513.8 295.8 C 514.1 295.6, 520.5 293.6, 524 292.7 C 524.8 292.5, 527.9 291.6, 531 290.7 C 536.6 289.1, 539.1 288.4, 547.8 286 C 550.3 285.3, 555 284, 558.1 283.1 C 561.3 282.2, 567.9 280.4, 572.8 279 C 577.6 277.6, 582.5 276.2, 583.6 275.9 C 585.6 275.3, 590.9 273.8, 595.5 272.6 C 596.8 272.2, 600.4 271.2, 603.4 270.4 C 606.4 269.5, 610.4 268.4, 612.3 267.9 C 614.1 267.4, 617.1 266.6, 619 266.1 C 623.2 265, 625.2 264.5, 629.4 263.4 C 636.7 261.5, 644.4 259.2, 644.7 258.9 C 645.2 258.4, 645.5 225.5, 645 216.4 C 644.3 201.2, 642.5 192.1, 637.6 177.3 C 630.9 157.3, 617.1 137.1, 600.6 123.3 C 581 106.9, 560.5 98.5, 534.4 96.2 C 528.3 95.7, 497 95.9, 496.4 96.5 C 495.9 97, 495.8 97.4, 490.7 121.9 C 489.4 128.4, 488.8 130.8, 487.9 135.3 C 487.2 138.2, 484.2 152.3, 482.6 160.1 C 482.1 162.5, 481.4 165.9, 481 167.8 C 480.6 169.6, 480 172.4, 479.7 174 C 479.3 175.6, 478.6 178.8, 478.1 181.1 C 477.6 183.5, 477 186.5, 476.6 187.9 C 476.3 189.3, 475.6 192.6, 475 195.4 C 474.4 198.1, 473.1 204.2, 472.1 208.9 C 471.1 213.6, 469.7 220.1, 469 223.5 C 467.3 232.2, 467.3 232.1, 464.8 230.5 C 459.1 226.8, 452.2 223.1, 447 221 C 443.9 219.8, 443.3 219.3, 443.3 218.5 C 443.3 218, 445.1 209, 446.4 203.1 C 446.9 200.9, 447.4 198.3, 447.6 197.4 C 447.9 196.4, 448.5 193.8, 449 191.5 C 449.5 189.2, 450.4 185.5, 450.9 183.3 C 452 178, 452.9 174.4, 453.9 170.5 C 454.4 168.8, 455 165.8, 455.4 163.9 C 455.7 162, 456.5 158.2, 457.1 155.6 C 457.7 153, 458.3 150.1, 458.5 149.3 C 458.7 148.4, 459 146.4, 459.4 145 C 459.7 143.6, 460.2 141.3, 460.5 140 C 460.8 138.7, 461.3 136.3, 461.6 134.8 C 462.6 130.3, 463.5 126.3, 463.9 124.3 C 464.1 123.2, 464.7 120.7, 465.2 118.8 C 465.6 116.8, 466.4 113.3, 466.9 111 C 467.3 108.7, 468 105.7, 468.3 104.3 C 470.3 96.3, 470.3 96.2, 468.4 95.9 C 467.2 95.8, 289.6 95.8, 286.6 95.9 M 165.5 298.2 C 165 298.7, 164.8 456.2, 165.3 463.5 C 165.7 471.7, 166.9 480.7, 167.8 483.4 C 168.1 484.5, 168.5 484.6, 170.4 483.9 C 172.5 483.1, 179.8 480.4, 183.8 479 C 185.3 478.5, 189 477.2, 191.9 476.2 C 194.8 475.1, 199.1 473.7, 201.5 472.9 C 203.9 472.1, 209.3 470.2, 213.4 468.8 C 217.5 467.3, 221.8 465.7, 223 465.4 C 224.2 465, 227.2 464, 229.8 463.1 C 232.3 462.2, 235.8 461.1, 237.6 460.5 C 239.4 459.9, 246 457.8, 252.2 455.7 C 258.4 453.7, 263.6 452, 263.8 452 C 265.7 452, 269.6 448.6, 270.5 446.2 L 271 444.7 270.9 386.5 C 270.9 321.1, 271.1 327.3, 269 324.9 C 267.5 323.2, 266.1 322.8, 257 320.9 C 254.1 320.3, 247.9 318.7, 238.8 316.4 C 236.3 315.8, 232.2 314.7, 229.6 314.1 C 222.3 312.3, 205.2 308, 197.6 306 C 191 304.3, 188 303.5, 181.4 301.6 C 174.5 299.7, 166.9 297.8, 166.3 297.8 C 166 297.8, 165.7 297.9, 165.5 298.2"/><path fill="#c4c4c4" d="M 389.7 424.6 C 389.4 424.8, 387.9 429.5, 385.2 438.9 L 381.2 452.9 381.4 455 C 381.7 457.4, 381.2 459.4, 378.7 465.8 C 376.4 471.3, 374.9 473.9, 370.4 479 C 365.8 484.2, 362.4 486.8, 355.4 490.3 C 351.7 492.2, 350.5 492.6, 346.1 493.9 C 344.8 494.2, 342.8 494.8, 341.6 495.1 C 338.1 496.1, 333.3 497.1, 328.1 498 C 309.4 501.1, 302.8 502.7, 289.8 507.4 C 276.7 512.2, 261.9 521.8, 253.4 531.2 C 243.3 542.4, 237.2 552.4, 232.8 565.4 C 231.2 570.4, 231.3 570.7, 235.1 572.5 C 237.7 573.7, 244.5 576.6, 246.5 577.3 C 250.5 578.7, 260.8 581.2, 267.9 582.5 C 268.7 582.6, 270.3 582.9, 271.5 583.1 C 275.5 583.9, 276.6 583.4, 277.7 579.9 C 278.6 577.2, 282.5 569.8, 284.4 567.4 C 286.4 564.6, 292.6 559, 296 556.7 C 298 555.4, 302.5 553.2, 305.7 552 C 312.4 549.4, 316.9 548.1, 327 546 C 329.5 545.5, 332.5 544.9, 333.5 544.6 C 335.9 544.1, 344 542.6, 345.5 542.4 C 347.1 542.1, 354.7 540.4, 357.2 539.6 C 360.3 538.8, 364.8 537.1, 368.9 535.4 C 373.5 533.4, 382.7 528.5, 385.5 526.6 C 392.1 521.9, 397.8 516.9, 403.6 510.6 C 416.7 496.5, 426.4 473.6, 426.9 456 C 426.9 452.9, 426.8 451.6, 425 438.8 C 423.4 427.6, 422.9 424.8, 422.6 424.6 C 422.2 424.3, 418.6 424.3, 406.1 424.3 C 393.7 424.3, 390 424.3, 389.7 424.6"/><path fill="#606060" d="M 521.9 161.5 C 516.9 163, 511.4 167.5, 509.2 171.9 C 507.3 175.9, 507.4 174, 507.4 205 C 507.4 232.5, 507.4 232.6, 507.9 234.7 C 509.6 241.1, 515.4 246.7, 521.9 248.1 C 524.3 248.7, 527.8 248.6, 537.4 247.6 C 541 247.3, 545.2 246.9, 546.9 246.7 C 548.5 246.6, 552.1 246.3, 554.9 246 C 557.6 245.7, 562.2 245.3, 565 245.1 C 571.3 244.7, 574.5 244.4, 580.9 243.8 C 587.4 243.1, 594.3 242.5, 598.4 242.2 C 606.3 241.7, 611.5 238.4, 614.5 232.1 C 616.3 228.5, 616.3 229.2, 616.2 200.9 C 616.1 177.7, 616.1 175.5, 615.7 174.1 C 614.1 168.8, 610 164.1, 605.2 162.1 L 602.9 161.1 563.1 161.1 C 525.6 161, 523.3 161.1, 521.9 161.5"/><path fill="#5c5c5c" d="M 190.5 353.3 C 186.1 353.4, 185.6 353.6, 182.7 355 C 178.9 357, 176.7 359, 175 362.3 C 173.1 365.9, 173.3 364.1, 173.3 391.1 C 173.3 415.1, 173.3 415.5, 173.8 417.2 C 176.5 425.9, 183.8 430.1, 193.8 428.4 C 199.7 427.4, 204.7 426.5, 205 426.4 C 205.5 426.2, 208.1 425.8, 214.9 424.8 C 217.5 424.4, 220.9 423.8, 222.4 423.5 C 223.9 423.3, 227.3 422.7, 229.9 422.3 C 240.6 420.5, 242.1 419.9, 245.8 416.2 C 247.5 414.5, 248.3 413.2, 249.2 410.5 L 249.9 408.4 249.9 387.1 L 249.9 365.9 249.3 364.4 C 247.6 359.9, 245.4 357.1, 242.2 355.3 C 238.6 353.2, 239.4 353.3, 215.6 353.2 C 204.1 353.1, 192.8 353.2, 190.5 353.3"/><path fill="#777" d="M 587.9 405.9 C 585.4 406.6, 572 409.8, 569.6 410.4 C 564.9 411.4, 562 412.1, 552.6 414.4 C 547.8 415.5, 541.1 417.1, 537.6 417.9 C 534.2 418.6, 528.7 419.9, 525.4 420.7 C 515.9 423.1, 507.8 424.8, 502.7 425.8 C 495.7 427, 487.8 434.4, 485.9 441.5 L 485.3 443.9 485.3 473.8 L 485.3 503.7 485.9 505.8 C 488.1 512.8, 492.5 517.1, 499.5 519.2 C 503.3 520.2, 506.5 520, 514 518 C 517.2 517.2, 524.7 515.3, 530.5 513.9 C 536.3 512.4, 543.3 510.7, 546 510 C 548.7 509.3, 552.6 508.4, 554.8 507.9 C 558.5 507, 562.5 506, 573 503.3 C 575.7 502.6, 581 501.3, 584.9 500.4 C 592.3 498.6, 594.8 497.7, 597.9 495.6 C 602 492.9, 605.4 487.8, 606.9 481.9 L 607.5 479.6 607.5 451.5 C 607.5 418.9, 607.6 420.6, 605.2 416 C 602.8 411.2, 599 408.1, 593.9 406.5 C 592.2 406, 588.9 405.6, 587.9 405.9"/><path fill="var(--marca-fundo, #000)" d="M 396.5 226.4 C 388.9 226.9, 381.1 228.5, 372.1 231.3 C 360.6 234.9, 348.4 242, 337.8 251.2 C 327.3 260.2, 317.4 273.9, 312.3 286.3 C 311.7 287.9, 310.8 290.1, 310.2 291.4 C 308.4 295.7, 306.2 305, 304.8 314 C 304.2 317.9, 304.2 330.1, 304.8 333.9 C 305 335.3, 305.3 337.1, 305.5 338 C 305.8 340.1, 307.8 347.4, 308.6 349.6 C 309 350.6, 309.4 351.8, 309.6 352.4 C 310.2 354, 313.4 360.5, 316.5 366 C 323.1 377.9, 324.6 380.4, 331.4 389.9 C 336 396.6, 372.6 441.8, 376.7 446.1 C 382.6 452.1, 382.8 452.4, 383.1 453.3 C 383.6 454.8, 397.8 468.4, 402.3 471.7 C 404 472.9, 404.2 472.8, 411.4 466.4 C 413.3 464.7, 415.3 462.9, 416 462.4 C 419.1 459.8, 423.7 454.4, 451 420.5 C 467.1 400.5, 480.6 383.8, 480.8 383.4 C 481.1 383, 482.4 380.9, 483.8 378.8 C 486.2 375.1, 488.8 370.9, 488.8 370.6 C 488.8 370.5, 489.6 368.7, 490.7 366.7 C 491.7 364.6, 493.1 361.6, 493.7 360.1 C 494.3 358.6, 495.1 356.7, 495.5 355.9 C 498.1 350.2, 501 341.3, 501.8 336.3 C 503 328.5, 503.1 326.3, 502.6 318.9 C 501.8 305.2, 498.7 293.9, 492.3 281.1 C 482.4 261.2, 467.4 246.4, 446.7 236 C 436.3 230.8, 422.6 227.2, 410.1 226.4 C 403.3 226, 403.4 226, 396.5 226.4"/><path fill="currentColor" d="M 446.2 280 C 445.4 280.2, 438.6 283.1, 428.5 287.5 C 426.2 288.5, 422.9 289.9, 421.1 290.7 C 419.3 291.4, 417.2 292.3, 416.4 292.7 C 414.6 293.6, 408.1 296.4, 400.6 299.5 C 397.6 300.8, 393 302.7, 390.4 303.9 C 381.8 307.6, 377.9 309.3, 373.1 311.3 C 370.5 312.3, 367.3 313.7, 366 314.2 C 361.5 316.3, 354.9 319.1, 351.9 320.2 C 350.2 320.9, 348.4 321.7, 347.7 322 C 343.5 324.1, 342 329.2, 344.5 332.7 C 345.6 334.2, 346.4 334.5, 353.6 336.4 C 357.1 337.3, 361.3 338.4, 363 338.9 C 364.7 339.4, 367.4 340.1, 368.9 340.5 C 370.4 340.9, 372.9 341.6, 374.4 342 C 375.9 342.4, 379.6 343.4, 382.6 344.1 C 388.8 345.7, 388.9 345.7, 389.2 346.8 C 389.4 347.3, 391.2 352.7, 393.4 359 C 395.5 365.3, 397.4 370.8, 397.6 371.4 C 397.8 371.9, 398.8 375, 399.8 378.1 C 403.7 389.8, 403.7 389.7, 406.1 390.9 C 409.3 392.4, 413.6 391, 415.2 388 C 415.5 387.4, 416.8 384.2, 418.1 380.9 C 419.4 377.6, 421.7 371.7, 423.3 367.9 C 424.8 364, 426.7 359.1, 427.5 357 C 429.3 352.1, 430.7 348.6, 432 345.4 C 433.2 342.2, 434.8 338.1, 437.9 330.1 C 439.2 326.7, 440.8 322.8, 441.3 321.4 C 441.8 320, 442.8 317.5, 443.4 315.9 C 444 314.2, 445.2 311.1, 446.1 309 C 446.9 306.9, 448.4 303, 449.4 300.4 C 450.4 297.8, 451.8 294.1, 452.5 292.3 C 453.8 289, 453.9 288.8, 453.9 286.5 C 453.9 284.2, 453.8 284.1, 453 282.8 C 451.4 280.3, 449 279.4, 446.2 280"/></g>
+    <path id="l-N" fill-rule="evenodd" d="M 861 225.8 C 857.8 226.1, 853.7 229.2, 852 232.5 C 850.5 235.4, 850.6 230.4, 850.5 290.7 C 850.4 341.8, 850.3 345.9, 850 345.9 C 849.5 346, 847.3 343.5, 844.8 340.2 C 843.6 338.6, 840.5 334.7, 835.3 328.5 C 833.7 326.7, 831.9 324.5, 831.3 323.6 C 830.7 322.8, 828.8 320.6, 827.2 318.6 C 825.7 316.7, 822.7 313, 820.6 310.5 C 818.6 308, 815.8 304.6, 814.5 303 C 813.2 301.4, 809.9 297.3, 807.2 294 C 804.5 290.6, 799.5 284.5, 796.1 280.4 C 792.7 276.3, 788.6 271.2, 787 269.1 C 783.5 264.9, 777 256.8, 773.5 252.5 C 772.2 250.9, 770.2 248.6, 769.2 247.3 C 768.1 245.9, 765.7 243, 763.9 240.8 C 757.1 232.3, 756 231.3, 752.5 229.6 C 749.4 228.1, 748.6 228, 737 228 C 726.2 228, 724.8 228.1, 722.5 229 C 719.2 230.2, 715.8 233.9, 714.7 237.2 C 714.2 238.9, 714.2 239.8, 714.3 324.5 L 714.4 410.1 715.4 412.1 C 717 415.3, 720 417.9, 723.5 419.2 C 725.1 419.7, 725.2 419.7, 736.1 419.7 C 748.3 419.8, 748.7 419.7, 751.6 418.2 C 753.7 417.1, 756.4 414.3, 757.5 412.1 L 758.4 410.4 758.4 357.8 C 758.5 302.2, 758.5 304.5, 759.6 304.9 C 759.8 305, 760.6 305.9, 761.3 306.9 C 762.1 307.9, 763.3 309.3, 764 310.1 C 765.4 311.6, 767.8 314.6, 772.8 320.7 C 774.1 322.3, 777.1 325.9, 779.4 328.8 C 781.7 331.6, 784.5 335, 785.5 336.3 C 786.5 337.5, 788.2 339.5, 789.1 340.6 C 790.1 341.7, 792.6 344.7, 794.7 347.4 C 796.8 350, 799.6 353.3, 800.8 354.8 C 804.2 358.9, 806.9 362.1, 808.5 364.2 C 809.3 365.1, 811.1 367.4, 812.6 369.3 C 814.1 371.1, 816.7 374.3, 818.3 376.4 C 821.4 380.4, 822.9 382.1, 826.9 386.9 C 828.3 388.6, 830.9 391.8, 832.8 394.1 C 834.6 396.4, 837.1 399.5, 838.3 400.9 C 839.5 402.4, 841.6 405, 843 406.9 C 849.7 415.4, 852.1 417.8, 856.2 419.8 L 858.3 420.9 872.1 420.9 L 885.9 420.9 887.4 420.1 C 890.4 418.6, 893.5 414.8, 894.4 411.3 C 894.9 409.4, 895 237.1, 894.5 234.7 C 893.8 231.5, 891.1 228.1, 888.1 226.6 C 886.7 225.9, 886.5 225.9, 881.8 225.7 C 876.1 225.5, 863 225.5, 861 225.8"/>
+    <path id="l-a" fill-rule="evenodd" d="M 968.9 278.5 C 967.6 278.6, 965.2 278.8, 963.4 279 C 950.4 280.1, 936.3 284.6, 926 290.9 C 919.9 294.6, 917.6 296.5, 917 298.5 C 916.3 300.9, 916.8 302, 921 307.6 C 924 311.4, 926.4 315, 927.6 317.4 C 928.4 319.1, 929.6 320.4, 931 321.3 C 933.1 322.7, 934.7 322.2, 939.9 318.7 C 944 315.9, 946.3 314.7, 949.2 313.4 C 960.2 308.7, 971.4 307.8, 982.3 310.6 C 992.2 313.2, 997.6 320.4, 997.6 331.2 C 997.6 336.2, 997.9 336, 993.5 335 C 982.9 332.5, 976.9 331.9, 965.9 331.9 C 956.2 331.9, 954.6 332, 946.6 333.7 C 936.7 335.7, 927.9 339.9, 920.9 346 C 905.1 359.6, 902.7 384.9, 915.5 403 C 916.9 404.9, 921.7 409.9, 924.1 411.8 C 930 416.5, 939 420.2, 948.6 421.8 C 953.2 422.6, 963.4 422.6, 967.8 421.8 C 979 419.8, 988.2 415.3, 994.8 408.7 C 996.6 406.9, 998.2 405.5, 998.4 405.5 C 998.9 405.5, 999 406.4, 999 410.5 C 999 415.2, 999.4 416.4, 1001.9 418.7 C 1004.5 421.2, 1003.8 421.1, 1018.1 421.1 C 1030.5 421.1, 1030.6 421.1, 1031.8 420.6 C 1033.6 419.7, 1035.8 417.4, 1036.5 415.7 L 1037 414.2 1037 372.3 C 1037 332.1, 1037 330.2, 1036.5 326.1 C 1036.2 323.8, 1035.8 321.3, 1035.6 320.5 C 1032.9 310.5, 1032.1 308.3, 1028.8 303.3 C 1020.2 290, 1006.6 282.4, 986.3 279.4 C 980.2 278.5, 972.8 278.1, 968.9 278.5 M 970 357.2 C 956.2 358.6, 948.8 363.3, 946.9 371.7 C 945.3 378.7, 948.6 386.4, 954.6 390 C 961 393.8, 971.3 394.6, 979.6 391.9 C 989.4 388.7, 996.4 381.1, 997.5 372.5 C 997.8 369.9, 997.8 361.7, 997.5 360.9 C 996.7 358.8, 978.2 356.3, 970 357.2"/>
+    <path id="l-v" fill-rule="evenodd" d="M 1046.3 279.4 C 1042.5 280.6, 1040.2 283.5, 1040.2 287.3 C 1040.1 289.3, 1039.7 288.1, 1045.8 303.4 C 1046.6 305.4, 1047.9 308.5, 1048.5 310.3 C 1049.9 313.8, 1049.7 313.1, 1054 324.3 C 1058.1 334.6, 1058.3 335.2, 1059.3 337.6 C 1061.9 343.8, 1063.3 347.1, 1064.1 349.4 C 1065.7 353.7, 1068.5 360.8, 1075.7 378.8 C 1080.8 391.6, 1087 407, 1088.5 411.1 C 1090.2 415.6, 1091.2 417, 1094.1 419.1 C 1096.8 421, 1096.5 421, 1109.5 421.1 C 1116.4 421.1, 1121.7 421.1, 1122.5 421 C 1124.4 420.6, 1126.4 419.5, 1128.2 417.9 C 1130.2 416, 1131 414.7, 1132.4 411 C 1134.1 406, 1135.4 402.6, 1137 398.5 C 1137.9 396.4, 1139.1 393.2, 1139.8 391.4 C 1140.5 389.6, 1142.2 385.3, 1143.5 381.9 C 1144.9 378.4, 1146.6 374.2, 1147.3 372.4 C 1147.9 370.6, 1149.2 367.3, 1150.1 365.1 C 1151.7 361.2, 1155.5 351.6, 1155.5 351.4 C 1155.5 351.3, 1156.4 349, 1157.5 346.2 C 1158.6 343.4, 1159.9 340.2, 1160.4 339 C 1160.8 337.8, 1161.7 335.8, 1162.3 334.4 C 1162.8 333, 1163.7 330.9, 1164.1 329.8 C 1164.6 328.6, 1165.9 325.2, 1167.1 322.1 C 1168.3 319.1, 1169.8 315.3, 1170.4 313.6 C 1171 312, 1171.9 309.5, 1172.5 308.1 C 1179 292.7, 1180.5 288.6, 1180.5 286.5 C 1180.5 283.2, 1178.7 280.7, 1175.5 279.5 C 1174.2 279, 1173.8 279, 1161.1 279.1 C 1146.8 279.2, 1147.3 279.1, 1144.8 280.7 C 1143 281.9, 1141.9 283.5, 1140.8 286.8 C 1140.2 288.3, 1139.2 291.1, 1138.6 292.9 C 1137.9 294.7, 1135.7 300.4, 1133.8 305.6 C 1131.8 310.9, 1129.4 317.3, 1128.3 319.9 C 1127.3 322.5, 1126.2 325.2, 1126 325.9 C 1124 331.4, 1117.7 348.1, 1115.2 354.5 C 1114.1 357.3, 1112.8 360.7, 1112.3 362.1 C 1111.3 364.7, 1110.7 365.4, 1110.1 364.7 C 1110 364.4, 1109.1 362.1, 1108.2 359.4 C 1107.3 356.8, 1106.1 353.4, 1105.5 352 C 1104.9 350.6, 1102.4 343.8, 1099.9 337 C 1097.3 330.2, 1093.8 321, 1092.1 316.5 C 1090.4 312, 1088.5 306.9, 1087.9 305.1 C 1086.3 300.8, 1084.3 295.4, 1081.2 287.3 C 1079.6 282.9, 1078.4 281.3, 1075.5 279.9 L 1073.9 279.1 1060.6 279.1 C 1050.2 279, 1047.2 279.1, 1046.3 279.4"/>
+    <path id="l-O" fill-rule="evenodd" d="M 1271.5 225 C 1269.5 225.1, 1267.2 225.3, 1266.4 225.5 C 1265.6 225.6, 1264.1 225.9, 1263.1 226 C 1258.5 226.6, 1249.5 229.1, 1244.1 231.3 C 1239.8 233, 1231.2 237.5, 1226.6 240.6 C 1218.8 245.7, 1209.2 254.7, 1203.1 262.7 C 1195.6 272.7, 1188.1 287.9, 1185.4 298.6 C 1185.1 300, 1184.5 302.2, 1184.2 303.5 C 1179.5 320.9, 1180.7 345.5, 1187 362.8 C 1192.7 378.2, 1200.8 390.9, 1212.1 401.9 C 1231.2 420.5, 1253.9 429.9, 1278.8 429.4 C 1289.3 429.2, 1298.3 427.6, 1307.5 424.2 C 1313.8 421.9, 1325.6 415.2, 1330.6 411 C 1347.4 397.2, 1358.5 382.1, 1365.1 364.1 C 1366.6 360.1, 1366.7 359.8, 1368 355.3 C 1372 341.1, 1373 327.5, 1371 313.8 C 1370.2 308.1, 1370 306.9, 1369.5 304.8 C 1365.7 287.4, 1358.8 272.9, 1348.1 259.8 C 1337.3 246.4, 1325.8 237.6, 1310.7 231.2 C 1302.8 227.8, 1292.4 225.5, 1282.5 225 C 1277.7 224.7, 1276.9 224.7, 1271.5 225 M 1273.1 267.8 C 1255.6 269.1, 1238.9 280.4, 1230.9 296.4 C 1224.4 309.3, 1222.5 326.3, 1225.7 341.9 C 1230.7 365.8, 1247.5 382.5, 1270 385.9 C 1273.8 386.5, 1282.3 386.4, 1286.1 385.7 C 1306.7 382.2, 1321.6 368.4, 1328 346.9 C 1331.2 336.1, 1331.6 322.2, 1328.9 310.4 C 1325.1 293.4, 1314.2 279.1, 1300 272.6 C 1290.8 268.4, 1283.1 267, 1273.1 267.8"/>
+    <path id="l-S" fill-rule="evenodd" d="M 1447 225.1 C 1446.7 225.2, 1445 225.4, 1443.4 225.7 C 1430.8 227.3, 1419.5 231.9, 1408 239.8 C 1393.6 249.9, 1384.6 265.1, 1383 282.5 C 1382.4 289.3, 1382.7 293.2, 1384.4 300.1 C 1387.5 313, 1395.2 323.2, 1407.9 331.2 C 1414.9 335.6, 1427.8 340.6, 1441.6 344.2 C 1445.9 345.3, 1451.8 347, 1455.9 348.2 C 1456.7 348.5, 1458.3 349, 1459.5 349.3 C 1463.6 350.5, 1468 352.3, 1471.2 354 C 1479.4 358.4, 1482.2 362.6, 1481.9 370.1 C 1481.9 372.4, 1481.7 373.5, 1481.3 374.5 C 1477 385.7, 1459.6 390.7, 1440.3 386.4 C 1428.2 383.6, 1417.3 377.8, 1408.3 369.2 C 1404.5 365.5, 1403.3 364.9, 1400.8 365.1 C 1397.7 365.3, 1396.7 366.1, 1391.5 372.9 C 1388.8 376.5, 1386.2 379.7, 1380.3 386.6 C 1377.9 389.6, 1377.5 390.4, 1377.3 392.7 C 1377.1 396, 1377.7 397.1, 1382.2 400.8 C 1397 413, 1413.1 422, 1426.8 425.9 C 1449.6 432.2, 1472.6 430.3, 1490.8 420.3 C 1501.2 414.7, 1508.9 407.8, 1515.5 398.4 C 1519.8 392.3, 1523.4 381.9, 1524.3 373.4 C 1524.6 370.3, 1524.4 361.1, 1524 358.6 C 1520.8 339, 1509.7 325.5, 1488.8 316.1 C 1484.7 314.2, 1480.9 312.7, 1478.8 312.1 C 1478.1 312, 1474.5 310.9, 1470.8 309.8 C 1461 306.9, 1458.4 306.1, 1456.1 305.5 C 1442.9 301.9, 1434 298.4, 1430.5 295.4 C 1424.9 290.8, 1423.4 283.4, 1426.8 276.9 C 1432.7 265.8, 1454.4 262.5, 1472.9 269.9 C 1480.5 273, 1486.3 276.4, 1493 281.8 C 1495.7 284, 1496.6 284.5, 1498.6 284.7 C 1500.6 284.8, 1502 284.4, 1503.3 283.3 C 1504.2 282.5, 1505 281.5, 1509.2 275.7 C 1510.1 274.4, 1512.2 271.8, 1513.7 269.8 C 1520 261.9, 1520.7 261, 1521.3 259.2 C 1522.3 256.1, 1521.4 254.1, 1517.1 250.1 C 1512.3 245.6, 1507.1 241.9, 1500.8 238.3 C 1488.1 231.2, 1477.9 227.8, 1462.5 225.6 C 1459.8 225.2, 1448.5 224.9, 1447 225.1"/>
+    <g id="l-ufcg" fill-rule="evenodd"><path d="M 1573 316.3 C 1572.4 316.7, 1571.5 317.4, 1571.1 318 L 1570.4 319 1570.4 341.3 L 1570.4 363.6 1571 365.6 C 1573.3 373.7, 1576.5 378, 1582.9 381.8 C 1589.2 385.6, 1599.2 386.7, 1607.4 384.6 C 1616.8 382.2, 1623.1 376.2, 1625.8 367 C 1627 363.1, 1627 362.9, 1627 340.7 C 1627 316.3, 1627.2 318, 1624.8 316.5 C 1623.7 315.8, 1623.5 315.7, 1621.6 315.8 C 1619.3 315.9, 1618.3 316.4, 1617.2 318 L 1616.6 318.8 1616.5 340 C 1616.3 363.1, 1616.4 362.6, 1614.8 366.4 C 1611.7 374, 1602.6 377.9, 1593.4 375.5 C 1587.7 374, 1583.4 370, 1581.7 364.6 C 1580.6 361.2, 1580.5 359.6, 1580.5 338.9 C 1580.5 317.4, 1580.6 318.3, 1579.1 316.9 C 1577.6 315.7, 1574.8 315.4, 1573 316.3"/><path d="M 1646.2 315.3 C 1644.8 315.8, 1643.8 316.7, 1643.1 318 L 1642.4 319.1 1642.3 349.6 C 1642.3 370.3, 1642.4 380.4, 1642.5 381.1 C 1643.6 385.2, 1650.3 385.8, 1652.2 381.9 C 1652.7 380.9, 1652.8 380.5, 1652.8 368.6 C 1652.8 357.3, 1652.8 356.3, 1653.2 355.8 C 1653.6 355.3, 1653.7 355.3, 1667.4 355.2 L 1681.2 355.1 1682.1 354.4 C 1684.7 352.3, 1685 349.4, 1682.8 347.2 C 1681.3 345.8, 1681.2 345.8, 1666.7 345.8 L 1653.5 345.8 1653.1 345.2 C 1652.6 344.4, 1652.6 325.6, 1653.1 324.9 C 1653.4 324.4, 1654 324.4, 1669.3 324.3 C 1684.9 324.1, 1685.2 324.1, 1685.9 323.6 C 1687.3 322.6, 1687.6 321.9, 1687.6 319.9 C 1687.6 317.7, 1687.1 316.7, 1685.6 315.7 L 1684.4 315 1665.8 315 C 1651.2 315, 1646.9 315.1, 1646.2 315.3"/><path d="M 1729 312.8 C 1720.4 313.7, 1712.6 317.5, 1706.2 323.9 C 1701.9 328.1, 1698.8 334.1, 1696.9 341.8 C 1696.1 345, 1696.1 354.6, 1696.9 357.8 C 1698.8 365.3, 1702 371, 1707.1 376.2 C 1710.3 379.5, 1715.2 382.4, 1720.3 384.1 C 1732.6 388.2, 1747.9 385.4, 1755.9 377.4 C 1758.9 374.4, 1759.3 372.5, 1757.3 370.2 C 1754.9 367.4, 1752.2 367.7, 1748.4 371 C 1743.8 375, 1735.7 377.2, 1729 376.3 C 1723.6 375.5, 1718.2 372.9, 1714.6 369.4 C 1710.4 365.4, 1707.8 360.1, 1706.9 353.6 C 1705.9 347.1, 1707.8 338.7, 1711.5 333.3 C 1719.8 321, 1737.6 318.3, 1748.5 327.6 C 1750.9 329.6, 1751.6 330, 1753.2 330 C 1757.1 330, 1759.7 325.5, 1757.5 322.6 C 1756.8 321.5, 1756.3 321.1, 1753.4 319 C 1747.2 314.4, 1737.2 311.9, 1729 312.8"/><path d="M 1797.6 312.9 C 1784 315, 1772.4 324.5, 1768.4 336.9 C 1766.3 343.3, 1765.7 349.6, 1766.6 355.6 C 1769.9 377.6, 1790.1 390.2, 1814.1 385.1 C 1823.6 383.1, 1832.7 378.1, 1835.5 373.5 L 1836.1 372.4 1836.2 361.7 C 1836.2 354.3, 1836.2 350.7, 1836 349.9 C 1835.6 348.6, 1833.9 346.9, 1832.6 346.5 C 1830.9 346.1, 1805.9 346.2, 1804.8 346.6 C 1802.8 347.5, 1801.7 349.1, 1801.7 351.4 C 1801.6 353.2, 1802.1 354.3, 1803.6 355.2 L 1804.6 355.9 1814.5 356 C 1823.6 356.1, 1824.5 356.2, 1824.9 356.6 C 1825.3 357, 1825.4 357.7, 1825.4 363.2 L 1825.5 369.5 1824.8 370.3 C 1822.9 372.5, 1815.8 375.3, 1809.4 376.4 C 1798.5 378.3, 1786.9 373.7, 1781.3 365.3 C 1778 360.4, 1777 357.3, 1776.8 351.1 C 1776.6 342, 1778.7 336.1, 1784.3 330.1 C 1792 321.9, 1806.5 319.6, 1817.6 324.9 C 1819.3 325.7, 1820.1 326.2, 1823.6 328.6 C 1825.8 330.1, 1827.2 330.2, 1829.1 329 C 1831.8 327.2, 1832.5 324, 1830.6 321.7 C 1828.5 319.3, 1820.8 315.4, 1815.2 313.9 C 1810.2 312.5, 1802.6 312.1, 1797.6 312.9"/></g>
+    <g id="marca-letras"><use href="#l-N"/><use href="#l-a"/><use href="#l-v"/><use href="#l-O"/><use href="#l-S"/></g>
+  </defs>
+</svg>
+<!-- marca:fim -->
+
+<a class="pular" href="#destaques">Pular para o conteúdo</a>
+
+<header class="global" aria-label="NavOS">
+  <nav class="global__barra" aria-label="Seções">
+    <a class="global__marca" href="#topo" aria-label="NavOS, início">
+      <svg viewBox="150 82 510 515" aria-hidden="true"><use href="#marca-icone"/></svg>
+    </a>
+    <a href="#destaques">Destaques</a>
+    <a href="#por-dentro">Por dentro</a>
+    <a href="#rota">Rota</a>
+    <a href="#campus">Campus</a>
+    <a href="#temas">Temas</a>
+    <a href="#tutorial">Tutorial</a>
+    <span class="global__status">Em breve</span>
+  </nav>
+</header>
+
+<p class="aviso">O NavOS chega primeiro ao Android, e já vem com um tutorial de seis passos. <a href="#tutorial">Veja como é <span aria-hidden="true">›</span></a></p>
+
+<!-- Barra local: aparece quando o hero sai de cena -->
+<div class="local" aria-hidden="true">
+  <nav class="local__barra" aria-label="Atalhos">
+    <a class="local__nome" href="#topo" tabindex="-1">NavOS <span class="local__secao" data-secao></span></a>
+    <a class="pilula pilula--contorno" href="#por-dentro" tabindex="-1">Explorar</a>
+    <a class="pilula" href="#fecho" tabindex="-1">Em breve</a>
+    <i class="local__progresso" aria-hidden="true"></i>
+  </nav>
+</div>
+
+<main>
+
+  <!-- 1. Hero: a marca em cromo e o aparelho que se levanta com a rolagem -->
+  <section class="hero cena" id="topo" data-cena="hero" aria-label="NavOS">
+    <div class="cena__fixo">
+      <div class="hero__mundo" aria-hidden="true">
+        <div class="hero__marca" data-marca>
+          <svg viewBox="705 214 828 226"><use href="#marca-letras" fill="url(#cromo)"/></svg>
+        </div>
+        <div class="aparelho" data-aparelho="hero">
+          <div class="aparelho__tela">
+            <video muted playsinline loop preload="auto" poster="midia/01-abertura.webp" src="midia/01-abertura.mp4"></video>
+          </div>
+        </div>
+      </div>
+      <div class="hero__texto">
+        <p class="hero__rotulo">NavOS</p>
+        <h1 class="display">Direto ao ponto.</h1>
+      </div>
+      <div class="hero__acoes">
+        <p class="capsula">O mapa do campus sede da UFCG, com rota a pé.<br>Em breve para Android.</p>
+        <a class="pilula" href="#destaques">Explorar</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Destaques: galeria que anda sozinha, um clipe real por moldura -->
+  <section class="faixa faixa--carvao" id="destaques" data-nome="Destaques" aria-labelledby="t-destaques">
+    <div class="conteudo destaques__topo">
+      <h2 class="titulo" id="t-destaques" data-luz>Dê uma olhada.</h2>
+      <a class="elo elo--icone" href="#tutorial" data-luz>Ver o tutorial
+        <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8.25"/><path class="cheio" d="M8.3 6.7v6.6l5.2-3.3Z"/></svg>
+      </a>
+    </div>
+    <div class="galeria" data-galeria>
+      <div class="galeria__trilho" tabindex="0" aria-label="Destaques do NavOS">
+        <article class="quadro" data-quadro>
+          <div class="quadro__texto">
+            <h3>Ache qualquer prédio.</h3>
+            <p>Digite a sigla, o curso ou a disciplina. O mapa voa até lá.</p>
+          </div>
+          <div class="quadro__cena">
+            <div class="aparelho" data-aparelho>
+              <div class="aparelho__tela"><video muted playsinline preload="none" poster="midia/02-busca.webp" src="midia/02-busca.mp4" aria-label="Busca por CAA: o mapa voa até a Central de Aulas."></video></div>
+            </div>
+          </div>
+        </article>
+        <article class="quadro" data-quadro>
+          <div class="quadro__texto">
+            <h3>Vá andando.</h3>
+            <p>A rota a pé se desenha. É só seguir a linha azul.</p>
+          </div>
+          <div class="quadro__cena">
+            <div class="aparelho" data-aparelho>
+              <div class="aparelho__tela"><video muted playsinline preload="none" poster="midia/03-rota.webp" src="midia/03-rota.mp4" aria-label="Rota até a Central de Aulas e início da navegação."></video></div>
+            </div>
+          </div>
+        </article>
+        <article class="quadro" data-quadro>
+          <div class="quadro__texto">
+            <h3>Chegue na aula.</h3>
+            <p>A próxima aula aparece no mapa, com sala e horário.</p>
+          </div>
+          <div class="quadro__cena">
+            <div class="aparelho" data-aparelho>
+              <div class="aparelho__tela"><video muted playsinline preload="none" poster="midia/04-aulas.webp" src="midia/04-aulas.mp4" aria-label="Minhas aulas no mapa e a aba Hoje."></video></div>
+            </div>
+          </div>
+        </article>
+        <article class="quadro" data-quadro>
+          <div class="quadro__texto">
+            <h3>E o resto da semana.</h3>
+            <p>Oportunidades, disciplinas e entregas no mesmo app.</p>
+          </div>
+          <div class="quadro__cena">
+            <div class="aparelho" data-aparelho>
+              <div class="aparelho__tela"><video muted playsinline preload="none" poster="midia/05-abas.webp" src="midia/05-abas.mp4" aria-label="Abas Radar e Acadêmico."></video></div>
+            </div>
+          </div>
+        </article>
+        <article class="quadro" data-quadro>
+          <div class="quadro__texto">
+            <h3>Feito para o sol.</h3>
+            <p>Tema claro para o meio-dia. Escuro para a aula da noite.</p>
+          </div>
+          <div class="quadro__cena">
+            <div class="aparelho" data-aparelho>
+              <div class="aparelho__tela"><video muted playsinline preload="none" poster="midia/06-claro.webp" src="midia/06-claro.mp4" aria-label="Navegação no tema claro."></video></div>
+            </div>
+          </div>
+        </article>
+      </div>
+      <div class="galeria__controle">
+        <div class="pontos" role="tablist" aria-label="Escolher destaque"></div>
+        <button class="redondo" type="button" data-pausa aria-label="Pausar a galeria">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-pausa" d="M9 7v10M15 7v10"/><path class="i-tocar cheio" d="M9 6.5v11l9.5-5.5Z"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. A frase: o que o app é, em um parágrafo -->
+  <section class="palco frase" data-nome="O mapa" aria-labelledby="t-frase">
+    <div class="conteudo conteudo--estreito conteudo--centro">
+      <p class="sobre" data-luz>O mapa do campus sede</p>
+      <h2 class="display-xl" id="t-frase" data-luz>Feito para<br>quem anda.</h2>
+      <p class="corpo-g" data-luz>O NavOS é <strong>o campus sede da UFCG no seu celular</strong>. Ache um prédio pela sigla, pelo curso ou pela disciplina. Siga a rota a pé, que dentro do campus é <strong>calculada no próprio aparelho</strong>. E veja <strong>a próxima aula no mapa</strong>, com sala e horário, antes de sair andando.</p>
+      <hr class="fio" data-luz>
+      <ul class="numeros">
+        <li data-luz><span class="numeros__pre">São</span><strong><span data-conta="146">146</span> locais</strong><span>com nome e sigla</span></li>
+        <li data-luz><span class="numeros__pre">Mais de</span><strong><span data-conta="12">12</span> km</strong><span>de caminhos a pé</span></li>
+        <li data-luz><span class="numeros__pre">Em</span><strong><span data-conta="10">10</span> categorias</strong><span>de alimentação a estacionamento</span></li>
+      </ul>
+    </div>
+    <div class="frase__sobe" aria-hidden="true" data-sobe>
+      <div class="aparelho" data-aparelho>
+        <div class="aparelho__tela"><img src="midia/01-abertura.webp" alt="" loading="lazy" width="780" height="1688"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Por dentro: o aparelho gira e cada recurso troca a tela -->
+  <section class="faixa faixa--carvao faixa--explorar" id="por-dentro" data-nome="Por dentro" aria-labelledby="t-dentro">
+    <div class="conteudo">
+      <p class="sobre" data-luz>Por dentro</p>
+      <h2 class="display" id="t-dentro" data-luz>Quatro abas.<br>Um campus inteiro.</h2>
+    </div>
+    <div class="cena cena--explorar" data-cena="explorar">
+      <div class="cena__fixo">
+        <div class="vitrine">
+          <ul class="recursos" data-recursos>
+            <li class="recurso" data-de="0.9" data-ate="11.5" data-midia="v01">
+              <button type="button" aria-expanded="false"><i class="recurso__mais" aria-hidden="true"></i>Mapa</button>
+              <div class="recurso__dobra"><p>O campus sede inteiro, com os prédios desenhados e as entradas marcadas. Toque num prédio para ver o que tem lá.</p></div>
+            </li>
+            <li class="recurso" data-de="0.6" data-ate="7.7" data-midia="v02">
+              <button type="button" aria-expanded="false"><i class="recurso__mais" aria-hidden="true"></i>Busca</button>
+              <div class="recurso__dobra"><p>Procure por nome, sigla, curso ou disciplina. Os lugares mais procurados já ficam à mão.</p></div>
+            </li>
+            <li class="recurso" data-de="0.4" data-ate="10.7" data-midia="v03">
+              <button type="button" aria-expanded="false"><i class="recurso__mais" aria-hidden="true"></i>Rota a pé</button>
+              <div class="recurso__dobra"><p>Toque em Ir e a rota se desenha. Em Iniciar, o app vira navegador: próxima curva, distância e hora de chegada.</p></div>
+            </li>
+            <li class="recurso" data-de="0.3" data-ate="3.6" data-midia="v04">
+              <button type="button" aria-expanded="false"><i class="recurso__mais" aria-hidden="true"></i>Minhas aulas</button>
+              <div class="recurso__dobra"><p>Um toque destaca no mapa os prédios das suas aulas de hoje.</p></div>
+            </li>
+            <li class="recurso" data-de="4.0" data-ate="7.25" data-midia="v04">
+              <button type="button" aria-expanded="false"><i class="recurso__mais" aria-hidden="true"></i>Hoje</button>
+              <div class="recurso__dobra"><p>A próxima aula, a sala e a linha do dia. O botão leva você até a porta.</p></div>
+            </li>
+            <li class="recurso" data-midia="i-radar">
+              <button type="button" aria-expanded="false"><i class="recurso__mais" aria-hidden="true"></i>Radar</button>
+              <div class="recurso__dobra"><p>Oportunidades, eventos e avisos reunidos num lugar só, com o prazo à vista.</p></div>
+            </li>
+            <li class="recurso" data-de="3.2" data-ate="6.4" data-midia="v05">
+              <button type="button" aria-expanded="false"><i class="recurso__mais" aria-hidden="true"></i>Acadêmico</button>
+              <div class="recurso__dobra"><p>Suas disciplinas, a semana e as atividades. Importe do SIGAA ou adicione à mão.</p></div>
+            </li>
+          </ul>
+          <div class="vitrine__cena" aria-hidden="true">
+            <div class="aparelho" data-aparelho="explorar">
+              <div class="aparelho__tela">
+                <video data-midia="v01" muted playsinline preload="none" poster="midia/01-abertura.webp" src="midia/01-abertura.mp4"></video>
+                <video data-midia="v02" muted playsinline preload="none" poster="midia/02-busca.webp" src="midia/02-busca.mp4"></video>
+                <video data-midia="v03" muted playsinline preload="none" poster="midia/03-rota.webp" src="midia/03-rota.mp4"></video>
+                <video data-midia="v04" muted playsinline preload="none" poster="midia/04-aulas.webp" src="midia/04-aulas.mp4"></video>
+                <video data-midia="v05" muted playsinline preload="none" poster="midia/05-academico.webp" src="midia/05-abas.mp4"></video>
+                <img data-midia="i-radar" src="midia/05-radar.webp" alt="" loading="lazy" width="780" height="1688">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Rota: a gravação enche a tela e recua para dentro do aparelho -->
+  <section class="cena cena--rota" id="rota" data-cena="rota" data-nome="Rota" aria-labelledby="t-rota">
+    <div class="cena__fixo">
+      <div class="rota__palco" aria-hidden="true">
+        <div class="aparelho" data-aparelho="rota">
+          <div class="aparelho__tela"><video muted playsinline loop preload="none" poster="midia/03-rota.webp" src="midia/03-rota-hd.mp4"></video></div>
+        </div>
+      </div>
+      <i class="rota__veu" aria-hidden="true"></i>
+      <header class="rota__titulo">
+        <p class="sobre">Rota a pé</p>
+        <h2 class="display-xl" id="t-rota">Do portão<br>à sala.</h2>
+      </header>
+      <div class="rota__fatos">
+        <p class="rota__resumo">Toque em Ir. O NavOS traça o caminho pelas calçadas e passagens do campus e acompanha você <strong>até a porta</strong>.</p>
+        <ul>
+          <li><strong>Curva a curva</strong><span>A próxima instrução fica no topo, com a distância até ela.</span></li>
+          <li><strong>Hora de chegada</strong><span>Tempo, metros e o horário em que você chega.</span></li>
+          <li><strong>Calculada no celular</strong><span>Dentro do campus, a rota sai do próprio aparelho.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Campus: os dados do app desenhados em vetor, com a rota real do clipe -->
+  <section class="cena cena--campus" id="campus" data-cena="campus" data-nome="Campus" aria-labelledby="t-campus">
+    <div class="cena__fixo">
+      <svg class="campus__mapa" data-mapa role="img" aria-label="Desenho do campus sede da UFCG com a rota a pé de 562 metros até a Central de Aulas CAA."></svg>
+      <header class="campus__titulo">
+        <p class="sobre">O campus sede</p>
+        <h2 class="display" id="t-campus">Mapeado caminho<br>por caminho.</h2>
+        <p class="corpo">Cada linha é um trecho da rede de caminhos que o NavOS usa para traçar a rota. Cada bloco, um prédio.</p>
+      </header>
+      <div class="campus__leitura" aria-hidden="true">
+        <p class="campus__destino"><span>Indo para</span><strong>Central de Aulas CAA</strong></p>
+        <p class="campus__metros"><strong data-metros>562</strong><span>m</span></p>
+        <p class="campus__tempo" data-tempo>7 min</p>
+        <p class="campus__passando" data-linha-passando>Passando por <strong data-passando>BD</strong></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. O essencial -->
+  <section class="palco essencial" data-nome="O essencial" aria-labelledby="t-essencial">
+    <div class="painel conteudo">
+      <div class="painel__topo">
+        <h2 class="titulo-g" id="t-essencial" data-luz>Tudo no aparelho.<br>Nada de cadastro.</h2>
+        <p class="corpo" data-luz>O que você leva com o <strong>NavOS</strong>:</p>
+      </div>
+      <div class="grade">
+        <article class="bloco" data-luz>
+          <svg class="bloco__arte" viewBox="0 0 120 72" aria-hidden="true"><g class="arte-predios"><rect x="8" y="34" width="22" height="26" rx="3"/><rect x="36" y="18" width="20" height="42" rx="3"/><rect x="62" y="28" width="24" height="32" rx="3"/><rect x="92" y="40" width="20" height="20" rx="3"/></g><path class="arte-pino" d="M46 4.5a7 7 0 0 1 7 7c0 5-7 11-7 11s-7-6-7-11a7 7 0 0 1 7-7Z"/><circle class="arte-pino-miolo" cx="46" cy="11.5" r="2.4"/></svg>
+          <strong><span data-conta="146">146</span> locais</strong>
+          <span>Prédios, serviços e entradas, cada um com nome e sigla.</span>
+        </article>
+        <article class="bloco" data-luz>
+          <svg class="bloco__arte" viewBox="0 0 120 72" aria-hidden="true"><path class="arte-rede" d="M6 60h28V36h30V14h50M34 60h52V36H64M86 60h28"/><path class="arte-rota" pathLength="1" d="M6 60h28V36h30V14h50"/><circle class="arte-ponto" cx="114" cy="14" r="4"/></svg>
+          <strong><span data-conta="224">224</span> trechos</strong>
+          <span>Mais de 12 km de caminhos a pé desenhados à mão.</span>
+        </article>
+        <article class="bloco" data-luz>
+          <svg class="bloco__arte" viewBox="0 0 120 72" aria-hidden="true"><rect class="arte-chip" x="42" y="18" width="36" height="36" rx="8"/><path class="arte-pinos" d="M52 18v-8M60 18v-8M68 18v-8M52 62v-8M60 62v-8M68 62v-8M42 28h-8M42 36h-8M42 44h-8M86 28h-8M86 36h-8M86 44h-8"/><path class="arte-raio" d="M62 26l-7 11h6l-2 9 7-11h-6Z"/></svg>
+          <strong>No celular</strong>
+          <span>Dentro do campus, a rota é calculada no próprio aparelho.</span>
+        </article>
+        <article class="bloco" data-luz>
+          <svg class="bloco__arte" viewBox="0 0 120 72" aria-hidden="true"><rect class="arte-cadeado" x="44" y="32" width="32" height="26" rx="6"/><path class="arte-arco" d="M50 32v-7a10 10 0 0 1 20 0v7"/><circle class="arte-furo" cx="60" cy="45" r="3"/></svg>
+          <strong>Sem cadastro</strong>
+          <span>Suas aulas ficam só no seu aparelho. E dá para apagar tudo.</span>
+        </article>
+        <article class="bloco" data-luz>
+          <svg class="bloco__arte" viewBox="0 0 120 72" aria-hidden="true"><rect class="arte-folha" x="34" y="10" width="52" height="54" rx="8"/><path class="arte-linhas" d="M44 26h32M44 37h32M44 48h20"/><path class="arte-seta" d="M98 22v22m-7-7 7 7 7-7"/></svg>
+          <strong>Do SIGAA</strong>
+          <span>Importe suas disciplinas ou adicione à mão.</span>
+        </article>
+        <article class="bloco" data-luz>
+          <svg class="bloco__arte" viewBox="0 0 120 72" aria-hidden="true"><circle class="arte-sol" cx="60" cy="36" r="13"/><path class="arte-raios" d="M60 10v7M60 55v7M34 36h7M79 36h7M41.6 17.6l5 5M73.4 49.4l5 5M41.6 54.4l5-5M73.4 22.6l5-5"/><path class="arte-lua" d="M60 23a13 13 0 0 0 0 26Z"/></svg>
+          <strong>2 temas</strong>
+          <span>Claro para o sol, escuro para a noite. Texto maior, se quiser.</span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. Temas: a página acende junto com a tela do app -->
+  <section class="cena cena--temas" id="temas" data-cena="temas" data-nome="Temas" aria-labelledby="t-temas">
+    <div class="cena__fixo">
+      <i class="temas__luz" aria-hidden="true"></i>
+      <header class="temas__titulo">
+        <h2 class="display" id="t-temas">Feito para o sol<br>do campus.</h2>
+        <p class="corpo-g">Tema claro para andar ao meio-dia. Escuro para a aula da noite. Contraste alto nos dois.</p>
+      </header>
+      <div class="temas__palco" aria-hidden="true">
+        <div class="aparelho" data-aparelho="temas">
+          <div class="aparelho__tela">
+            <img src="midia/tema-escuro.webp" alt="" loading="lazy" width="780" height="1688">
+            <img class="temas__claro" src="midia/tema-claro.webp" alt="" loading="lazy" width="780" height="1688">
+            <video class="temas__video" muted playsinline preload="none" src="midia/06-claro.mp4"></video>
+            <i class="temas__risco"></i>
+          </div>
+        </div>
+      </div>
+      <div class="temas__base">
+        <div class="seletor" role="group" aria-label="Tema do app">
+          <button type="button" data-tema="escuro" aria-pressed="true">Escuro</button>
+          <button type="button" data-tema="claro" aria-pressed="false">Claro</button>
+        </div>
+        <p class="temas__legenda"><strong data-legenda-t>Escuro.</strong> <span data-legenda>Fundo preto e linhas claras, para a sala escura e a volta à noite.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. Tutorial: as capturas da versão atual do app -->
+  <section class="claro tutorial" id="tutorial" data-nome="Tutorial" data-tutorial aria-labelledby="t-tutorial">
+    <div class="conteudo tutorial__topo">
+      <div>
+        <p class="sobre sobre--claro">Primeiros passos</p>
+        <h2 class="titulo-g" id="t-tutorial">Seis toques e você<br>já sabe usar.</h2>
+      </div>
+      <div class="tutorial__lado">
+        <p class="corpo corpo--claro">Na primeira vez, o NavOS mostra onde fica cada coisa. Dá para pular e rever depois, nas Configurações.</p>
+        <div class="seletor seletor--claro" role="group" aria-label="Tema das capturas">
+          <button type="button" data-tema="light" aria-pressed="true">Claro</button>
+          <button type="button" data-tema="dark" aria-pressed="false">Escuro</button>
+        </div>
+      </div>
+    </div>
+    <div class="trilho" tabindex="0" aria-label="Passos do tutorial" data-trilho>
+      <article class="passo" data-foco="36">
+        <div class="passo__tela"><img data-passo="1" src="midia/tutorial/passo-1-light.webp" alt="Tutorial, passo 1 de 6: Este é o campus." loading="lazy" width="780" height="1688"></div>
+        <p><strong>Este é o campus.</strong> Arraste para andar pelo mapa e afaste dois dedos para aproximar. Toque num prédio para ver o que tem lá e traçar a rota a pé.</p>
+      </article>
+      <article class="passo" data-foco="100">
+        <div class="passo__tela"><img data-passo="2" src="midia/tutorial/passo-2-light.webp" alt="Tutorial, passo 2 de 6: Ache qualquer lugar." loading="lazy" width="780" height="1688"></div>
+        <p><strong>Ache qualquer lugar.</strong> Digite o nome ou a sigla, como CAA. Também funciona com curso e disciplina.</p>
+      </article>
+      <article class="passo" data-foco="0">
+        <div class="passo__tela"><img data-passo="3" src="midia/tutorial/passo-3-light.webp" alt="Tutorial, passo 3 de 6: Mostre só o que procura." loading="lazy" width="780" height="1688"></div>
+        <p><strong>Mostre só o que procura.</strong> Filtre o mapa por categoria, como alimentação ou estacionamento, ou pelo seu curso.</p>
+      </article>
+      <article class="passo" data-foco="100">
+        <div class="passo__tela"><img data-passo="4" src="midia/tutorial/passo-4-light.webp" alt="Tutorial, passo 4 de 6: Veja onde você está." loading="lazy" width="780" height="1688"></div>
+        <p><strong>Veja onde você está.</strong> Um toque leva o mapa até você. É daí que a rota a pé começa.</p>
+      </article>
+      <article class="passo" data-foco="100">
+        <div class="passo__tela"><img data-passo="5" src="midia/tutorial/passo-5-light.webp" alt="Tutorial, passo 5 de 6: O resto do seu dia." loading="lazy" width="780" height="1688"></div>
+        <p><strong>O resto do seu dia.</strong> Hoje mostra a próxima aula. Radar reúne oportunidades e eventos. Acadêmico guarda suas disciplinas.</p>
+      </article>
+      <article class="passo" data-foco="0">
+        <div class="passo__tela"><img data-passo="6" src="midia/tutorial/passo-6-light.webp" alt="Tutorial, passo 6 de 6: Deixe do seu jeito." loading="lazy" width="780" height="1688"></div>
+        <p><strong>Deixe do seu jeito.</strong> Tema, texto maior e suas preferências ficam no perfil. O tutorial também, se quiser rever.</p>
+      </article>
+    </div>
+    <div class="conteudo trilho__setas">
+      <button class="redondo redondo--claro" type="button" data-seta="-1" aria-label="Passo anterior" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 7l-5 5 5 5"/></svg></button>
+      <button class="redondo redondo--claro" type="button" data-seta="1" aria-label="Próximo passo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 7l5 5-5 5"/></svg></button>
+    </div>
+  </section>
+
+  <!-- 10. Fecho: NavOS vira "NOS somos UFCG", como na abertura do app -->
+  <section class="cena cena--fecho" id="fecho" data-cena="fecho" data-nome="Em breve" aria-label="NavOS: nós somos UFCG">
+    <div class="cena__fixo">
+      <svg class="fecho__marca" viewBox="0 0 2000 667" role="img" aria-label="NavOS UFCG. Nós somos UFCG." data-fecho>
+        <g data-peca="tudo">
+          <use href="#marca-icone" data-peca="icone"/>
+          <g fill="currentColor">
+            <use href="#l-N"/>
+            <use href="#l-a" data-peca="a"/>
+            <use href="#l-v" data-peca="v"/>
+            <g data-peca="os"><use href="#l-O"/><use href="#l-S"/></g>
+            <use href="#l-ufcg" data-peca="ufcg"/>
+          </g>
+          <g data-peca="somos" transform="translate(0 -60)" fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+            <path pathLength="1" d="M1312.5 351.5C1310 347 1305.5 344.5 1301 344.5C1295 344.5 1291 348 1291 353C1291 358.5 1295.5 361 1301.5 363C1308.5 365.2 1313 367.5 1313 372.5C1313 378 1308 381.5 1301.5 381.5C1296.5 381.5 1292 379.5 1289.5 375"/>
+            <path pathLength="1" d="M1331.5 363a19 18.5 0 1 0 38 0a19 18.5 0 1 0 -38 0"/>
+            <path pathLength="1" d="M1391.5 344.5V381.5M1391.5 358C1391.5 349.5 1397.5 344.5 1404.5 344.5C1412.5 344.5 1417.5 349.5 1417.5 358V381.5M1417.5 358C1417.5 349.5 1423.5 344.5 1430.5 344.5C1438.5 344.5 1443.5 349.5 1443.5 358V381.5"/>
+            <path pathLength="1" d="M1465.5 363a19 18.5 0 1 0 38 0a19 18.5 0 1 0 -38 0"/>
+            <path pathLength="1" d="M1544.5 351.5C1542 347 1537.5 344.5 1533 344.5C1527 344.5 1523 348 1523 353C1523 358.5 1527.5 361 1533.5 363C1540.5 365.2 1545 367.5 1545 372.5C1545 378 1540 381.5 1533.5 381.5C1528.5 381.5 1524 379.5 1521.5 375"/>
+          </g>
+        </g>
+      </svg>
+      <div class="fecho__acoes">
+        <p class="capsula">O campus sede da UFCG, no seu bolso.<br>Em breve para Android.</p>
+        <a class="pilula" href="#topo">Voltar ao início</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="rodape">
+  <div class="conteudo">
+    <p>As telas mostram o aplicativo real, gravado em funcionamento. Aulas, entregas e oportunidades que aparecem nelas são exemplos, marcados com “(exemplo)”.</p>
+    <p>O desenho do campus usa os mesmos dados do app: 320 contornos de prédios e 224 trechos de caminho. A rota de 562 m foi calculada pelo roteador do NavOS.</p>
+    <p>Mapa: © OpenStreetMap contributors (ODbL), OpenMapTiles e OpenFreeMap. O aparelho é uma ilustração.</p>
+    <hr class="fio">
+    <p class="rodape__fim">NavOS. Campus sede da UFCG, Campina Grande.</p>
+  </div>
+</footer>
+
+<script src="js/dados-campus.js"></script>
+<script src="js/pagina.js"></script>
+</body>
+</html>
