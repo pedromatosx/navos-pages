@@ -184,10 +184,12 @@ svg .cheio { fill: currentColor; stroke: none; }
 .js .hero__texto, .js .hero__acoes { opacity: 0; will-change: opacity, transform; }
 
 /* ---------- 2. Destaques ---------- */
-.destaques__topo { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; margin-bottom: clamp(24px, 3.2vw, 44px); }
+/* Sem espaço para os dois na mesma linha, o link desce para baixo do título em vez de quebrar. */
+.destaques__topo { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 10px 20px; margin-bottom: clamp(24px, 3.2vw, 44px); }
+.destaques__topo .elo { white-space: nowrap; }
 .galeria__trilho { display: flex; gap: 20px; overflow-x: auto; scroll-snap-type: x mandatory; padding-inline: var(--margem-conteudo); scroll-padding-inline: var(--margem-conteudo); scrollbar-width: none; overscroll-behavior-x: contain; }
 .galeria__trilho::-webkit-scrollbar, .trilho::-webkit-scrollbar { display: none; }
-.quadro { --alt: clamp(470px, 46vw, 680px); position: relative; flex: 0 0 min(var(--largura), 100vw - 2 * var(--margem)); height: var(--alt); border-radius: var(--raio); background: var(--obsidiana); overflow: hidden; scroll-snap-align: center; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); align-items: center; transition: opacity var(--lento) var(--curva); }
+.quadro { --alt: clamp(320px, min(46vw, 100svh - 40px), 680px); position: relative; flex: 0 0 min(var(--largura), 100vw - 2 * var(--margem)); height: var(--alt); border-radius: var(--raio); background: var(--obsidiana); overflow: hidden; scroll-snap-align: center; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); align-items: center; transition: opacity var(--lento) var(--curva); }
 .quadro__texto { padding-left: clamp(28px, 7vw, 104px); padding-right: 20px; display: grid; gap: 14px; transition: opacity var(--lento) var(--curva), transform var(--lento) var(--curva); }
 .quadro__texto h3 { font-size: clamp(30px, 4.1vw, 56px); font-weight: 600; line-height: 1.07; letter-spacing: -0.015em; text-wrap: balance; }
 .quadro__texto p { font-size: clamp(17px, 1.6vw, 21px); font-weight: 600; line-height: 1.38; letter-spacing: 0.011em; color: var(--cinza); max-width: 20em; text-wrap: pretty; }
@@ -343,6 +345,10 @@ svg .cheio { fill: currentColor; stroke: none; }
 .temas__legenda strong { color: var(--porcelana); }
 .temas__palco { position: relative; grid-column: 2; grid-row: 1 / -1; display: grid; place-items: center; perspective: 1700px; }
 .temas__palco .aparelho { --w: min(350px, 37svh, 34vw); }
+@supports (height: 1cqh) {
+  .temas__palco { container-type: size; }
+  .temas__palco .aparelho { --w: min(350px, 37svh, 34vw, 100cqh * 0.94 / 2.0826); }
+}
 .temas__claro { clip-path: inset(0 calc((1 - var(--t, 0)) * 100%) 0 0); }
 .temas__video { opacity: 0; }
 .temas__video.ativa { opacity: 1; }
@@ -379,7 +385,7 @@ svg .cheio { fill: currentColor; stroke: none; }
 .rodape__fim { color: var(--porcelana); }
 
 /* ---------- Janelas baixas (notebook com a barra de favoritos, por exemplo) ---------- */
-@media (max-height: 660px) and (min-width: 901px) {
+@media (min-width: 601px) and (orientation: landscape) and (max-height: 660px) {
   .recursos { gap: 8px; }
   .recurso > button { padding-block: 9px; }
   .recurso__dobra p { font-size: 15px; }
@@ -388,8 +394,9 @@ svg .cheio { fill: currentColor; stroke: none; }
   .rota__fatos li { padding-top: 12px; }
 }
 
-/* ---------- Telas médias e pequenas ---------- */
-@media (max-width: 900px) {
+/* ---------- Celular em pé e telas estreitas: tudo em coluna ----------
+   Deitado, o celular fica com o layout lado a lado (com a versão baixa, mais abaixo). O JS usa a mesma consulta. */
+@media (max-width: 900px) and (orientation: portrait), (max-width: 600px) {
   .global__barra a:not(.global__marca) { display: none; }
   .hero__acoes { left: var(--margem); right: var(--margem); max-width: none; justify-content: space-between; bottom: max(22px, env(safe-area-inset-bottom)); }
   .hero__texto { left: var(--margem); bottom: 124px; }
@@ -406,19 +413,16 @@ svg .cheio { fill: currentColor; stroke: none; }
   .numeros li > span { text-wrap: balance; text-align: center; }
 
   .cena--explorar .cena__fixo { padding: 70px 0 14px; }
-  .vitrine { width: calc(100% - 24px); min-height: 0; height: 100%; }
-  .vitrine__cena { inset: 0 0 auto 0; height: 60%; }
+  /* Em coluna: a fileira de botões e a explicação ficam com a altura delas; o aparelho, com o que sobra. */
+  .vitrine { width: calc(100% - 24px); min-height: 0; height: 100%; display: grid; grid-template-rows: minmax(0, 1fr) auto auto; row-gap: 12px; padding-bottom: 18px; }
+  .calmo .vitrine { height: calc(100svh - 84px); }
+  .vitrine__cena { position: relative; inset: auto; grid-row: 1; min-height: 0; }
   .vitrine__cena .aparelho { --w: min(52vw, 27svh); }
-  .recursos { left: 0; right: 0; top: 61%; bottom: auto; width: auto; transform: none; flex-direction: row; gap: 8px; padding: 0 16px; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity; }
+  .recursos { position: relative; grid-row: 2; left: auto; right: auto; top: auto; bottom: auto; width: auto; transform: none; flex-direction: row; gap: 8px; padding: 0 16px; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity; }
   .recursos::-webkit-scrollbar { display: none; }
-  .recurso, .js .recurso, .js .recurso.aberto { flex: none; width: auto; scroll-snap-align: center; }
-  .recurso > button { padding: 9px 16px 9px 10px; font-size: 14px; gap: 8px; }
-  .recurso__mais { transform: scale(0.82); }
-  .recurso.aberto .recurso__mais { transform: scale(0.82) rotate(45deg); }
-  .recurso__dobra { display: none; }
-  .vitrine__legenda { display: block; position: absolute; left: 20px; right: 20px; top: calc(61% + 58px); font-size: 15px; line-height: 1.38; font-weight: 600; letter-spacing: 0; color: var(--cinza); text-align: center; text-wrap: pretty; transition: opacity var(--rapido) var(--curva); }
-  .vitrine__legenda.trocando { opacity: 0; }
+  .vitrine__legenda { grid-row: 3; margin: 0 20px; text-align: center; }
 
+  /* O JS troca este tamanho pelo vão medido entre a barra do topo e os fatos. */
   .rota__palco .aparelho { --w: min(50vw, 22svh); }
   .rota__fatos { left: var(--margem); right: var(--margem); width: auto; top: auto; bottom: max(20px, env(safe-area-inset-bottom)); transform: none; gap: 14px; }
   .rota__resumo { font-size: 17px; }
@@ -427,7 +431,8 @@ svg .cheio { fill: currentColor; stroke: none; }
   .rota__fatos li strong { font-size: 17px; }
   .rota__fatos li span { font-size: 13px; }
 
-  .cena--campus .cena__fixo::before { background: linear-gradient(0deg, #000 0, rgba(0, 0, 0, 0.9) 26%, rgba(0, 0, 0, 0) 56%, rgba(0, 0, 0, 0) 80%, #000 100%); }
+  /* --veu: altura do texto de baixo, medida pelo JS. O escuro cobre o texto inteiro e some logo acima dele. */
+  .cena--campus .cena__fixo::before { background: linear-gradient(0deg, #000 0, rgba(0, 0, 0, 0.9) var(--veu, 30%), rgba(0, 0, 0, 0) calc(var(--veu, 30%) + 110px), rgba(0, 0, 0, 0) 84%, #000 100%); }
   .campus__titulo, .campus__leitura { top: auto; bottom: max(26px, env(safe-area-inset-bottom)); translate: none; }
   .campus__metros strong { font-size: clamp(72px, 24vw, 120px); }
 
@@ -442,19 +447,91 @@ svg .cheio { fill: currentColor; stroke: none; }
   .temas__palco .aparelho { --w: min(48vw, 23svh); }
   .temas__base { grid-row: 3; margin-top: 0; justify-items: center; gap: 10px; }
   .temas__legenda { min-height: 4.4em; }
+  /* O aparelho se mede pelo palco (a faixa que sobra entre o título e o seletor), nunca pela tela inteira. */
+  @supports (height: 1cqh) {
+    .vitrine__cena { container-type: size; }
+    .vitrine__cena .aparelho { --w: min(62vw, 300px, 100cqh * 0.86 / 2.0826); }
+    .temas__palco .aparelho { --w: min(52vw, 300px, 100cqh * 0.92 / 2.0826); }
+  }
 
   .tutorial__topo { grid-template-columns: minmax(0, 1fr); align-items: start; }
   .passo { flex-basis: min(74vw, 320px); }
 
   .fecho__acoes, .hero__acoes { gap: 12px; padding-left: 18px; }
 }
+/* Celular baixo: o resumo da rota sai e os três fatos ficam; sobra altura para o aparelho. */
+@media (max-width: 900px) and (orientation: portrait) and (max-height: 720px), (max-width: 600px) and (max-height: 720px) {
+  .rota__resumo { display: none; }
+}
 @media (max-width: 520px) {
   .numeros { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+}
+/* Celular estreito: a barra local fica com o nome, a seção e o botão principal. */
+@media (max-width: 389px) {
+  .local__barra { padding-left: 16px; }
+  .local__barra .pilula--contorno { display: none; }
 }
 @media (max-width: 420px) {
   .aviso { font-size: 13px; line-height: 18px; padding-block: 10px; }
   .grade { gap: 8px; }
   .bloco > span { font-size: 13px; }
+}
+
+/* ---------- Recursos em fileira de botões, com a explicação embaixo (celular em pé e deitado) ---------- */
+@media (max-width: 900px) and (orientation: portrait), (max-width: 600px), (min-width: 601px) and (orientation: landscape) and (max-height: 500px) {
+  .recurso, .js .recurso, .js .recurso.aberto { flex: none; width: auto; scroll-snap-align: center; }
+  .recurso > button { padding: 9px 16px 9px 10px; font-size: 14px; gap: 8px; }
+  .recurso__mais { transform: scale(0.82); }
+  .recurso.aberto .recurso__mais { transform: scale(0.82) rotate(45deg); }
+  .recurso__dobra { display: none; }
+  /* Três linhas reservadas: a troca de texto não empurra o aparelho. */
+  .vitrine__legenda { display: block; min-height: 4.14em; font-size: 15px; line-height: 1.38; font-weight: 600; letter-spacing: 0; color: var(--cinza); text-wrap: pretty; transition: opacity var(--rapido) var(--curva); }
+  .vitrine__legenda.trocando { opacity: 0; }
+}
+
+/* ---------- Celular deitado (e janelas muito baixas): lado a lado, compacto ---------- */
+@media (min-width: 601px) and (orientation: landscape) and (max-height: 500px) {
+  .hero { --marca-w: min(70vw, 110svh); }
+  .hero__marca, .hero .aparelho { top: 40%; }
+  .hero__mundo { perspective-origin: 50% 40%; }
+  .hero__texto, .hero__acoes { bottom: max(18px, env(safe-area-inset-bottom)); }
+  .hero__rotulo { font-size: 19px; }
+  .hero__texto .display { font-size: clamp(30px, 5vw, 44px); }
+
+  .cena--explorar .cena__fixo { padding: 66px 0 12px; }
+  .vitrine { min-height: 0; height: 100%; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr); grid-template-rows: minmax(0, 1fr) auto auto minmax(0, 1fr); column-gap: 24px; padding-left: clamp(24px, 6.5%, 84px); }
+  .calmo .vitrine { height: calc(100svh - 78px); }
+  .recursos { position: relative; grid-column: 1; grid-row: 2; left: auto; top: auto; transform: none; width: auto; flex-direction: row; flex-wrap: wrap; gap: 8px; }
+  .vitrine__legenda { grid-column: 1; grid-row: 3; margin-top: 14px; max-width: 26em; }
+  .vitrine__cena { position: relative; inset: auto; grid-column: 2; grid-row: 1 / -1; min-height: 0; }
+  .vitrine__cena .aparelho { --w: min(300px, 30svh); }
+
+  .rota__resumo { display: none; }
+  .rota__fatos { top: calc(50% + 30px); }
+  .rota__fatos ul { gap: 8px; }
+  .rota__fatos li { padding-top: 8px; }
+  .rota__fatos li strong { font-size: 17px; }
+  .rota__fatos li span { font-size: 13px; }
+
+  .cena--fecho .cena__fixo { padding: 70px var(--margem) 14px; gap: 16px; }
+  .fecho__marca { width: min(100%, 1060px, (100svh - 170px) * 3); }
+
+  .cena--temas .cena__fixo { padding: 66px var(--margem-conteudo) 12px; }
+  .temas__titulo { gap: 10px; }
+  .temas__titulo .display { font-size: clamp(30px, 5vw, 44px); }
+  .temas__titulo .corpo-g { font-size: 15px; }
+  .temas__base { margin-top: 16px; gap: 10px; }
+
+  @supports (height: 1cqh) {
+    .vitrine__cena { container-type: size; }
+    .vitrine__cena .aparelho { --w: min(300px, 100cqh * 0.86 / 2.0826); }
+  }
+}
+
+/* Deitado e estreito, o título e o botão do hero não cabem lado a lado: o título sobe. */
+@media (min-width: 601px) and (max-width: 860px) and (orientation: landscape) and (max-height: 500px) {
+  .hero__texto { bottom: calc(max(18px, env(safe-area-inset-bottom)) + 70px); }
+  .hero__acoes { left: var(--margem-conteudo); right: auto; }
 }
 
 /* ---------- Sem JavaScript: tudo à vista, nada sobreposto ---------- */
@@ -466,6 +543,10 @@ html:not(.js) .rota__palco { place-items: center start; padding-left: 14vw; }
 html:not(.js) .fecho__marca [data-peca="somos"] { display: none; }
 html:not(.js) .cena--campus .cena__fixo { min-height: 60svh; }
 html:not(.js) .cena--campus .cena__fixo::before { display: none; }
+@media (max-width: 900px) and (orientation: portrait), (max-width: 600px), (min-width: 601px) and (orientation: landscape) and (max-height: 500px) {
+  html:not(.js) .recursos { flex-direction: column; overflow: visible; margin: 0; padding: 0 16px; }
+  html:not(.js) .recurso__dobra { display: grid; }
+}
 
 /* ---------- Movimento reduzido: nada preso, nada conduzido pela rolagem ---------- */
 .calmo { scroll-behavior: auto; }
@@ -480,9 +561,20 @@ html:not(.js) .cena--campus .cena__fixo::before { display: none; }
 .calmo .campus__titulo .display { font-size: clamp(30px, 3.6vw, 48px); }
 .calmo .campus__leitura { top: auto; bottom: 7svh; translate: none; }
 .calmo .campus__metros strong { font-size: clamp(64px, 9vw, 128px); }
-@media (max-width: 900px) {
+@media (max-width: 900px) and (orientation: portrait), (max-width: 600px) {
   .calmo .rota__titulo, html:not(.js) .rota__titulo { inset: 76px var(--margem) auto; width: auto; text-align: center; }
   .calmo .rota__palco .aparelho { --w: min(40vw, 17svh); }
   .calmo .rota__fatos, html:not(.js) .rota__fatos { top: auto; }
+  /* Parado, o mapa fica no vão entre o título (sem o parágrafo) e a leitura, com escuro só atrás dos dois. */
+  .calmo .campus__titulo .corpo { display: none; }
+  .calmo .cena--campus .cena__fixo::before { background: linear-gradient(180deg, #000 0, rgba(0, 0, 0, 0.9) var(--veu-topo, 30%), rgba(0, 0, 0, 0) calc(var(--veu-topo, 30%) + 36px)), linear-gradient(0deg, #000 0, rgba(0, 0, 0, 0.9) var(--veu, 30%), rgba(0, 0, 0, 0) calc(var(--veu, 30%) + 36px)); }
 }
 .calmo *, .calmo *::before, .calmo *::after { transition-duration: 1ms !important; animation-duration: 1ms !important; }
+/* Parado e deitado: título em cima, fatos e leitura no pé, sem nada por baixo da barra local. */
+@media (min-width: 601px) and (orientation: landscape) and (max-height: 500px) {
+  .calmo .rota__titulo, html:not(.js) .rota__titulo { top: 70px; }
+  .calmo .rota__fatos, html:not(.js) .rota__fatos { top: auto; bottom: 14px; transform: none; }
+  .calmo .campus__titulo { top: 66px; }
+  .calmo .campus__titulo .corpo { display: none; }
+  .calmo .campus__leitura { bottom: 14px; }
+}

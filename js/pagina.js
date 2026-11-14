@@ -35,7 +35,11 @@
 
   let vw = raiz.clientWidth;
   let vh = innerHeight;
-  const estreito = () => vw <= 900;
+  // As mesmas consultas do CSS: em coluna (celular em pé) e baixo (celular deitado, lado a lado compacto).
+  const emColuna = matchMedia("(max-width: 900px) and (orientation: portrait), (max-width: 600px)");
+  const baixo = matchMedia("(min-width: 601px) and (orientation: landscape) and (max-height: 500px)");
+  const estreito = () => emColuna.matches;
+  const emFileira = () => emColuna.matches || baixo.matches; // recursos como fileira de botões
 
   /* ------------------------------------------------------------------ vídeo */
   const tocar = (v) => {
@@ -147,7 +151,8 @@
     medir(c) {
       const larguraMarca = c.marca.offsetWidth;
       const deitado = larguraMarca * 0.37; // deitado, o comprimento cobre ~77% da marca
-      const emPe = Math.min((c.alt * 0.7) / 2.0826, vw * 0.6);
+      // Em pé, o aparelho fica fora da barra do topo mesmo numa janela baixa.
+      const emPe = Math.min(Math.min(c.alt * 0.7, c.alt - 150) / 2.0826, vw * 0.6);
       const base = Math.max(deitado, emPe); // desenhado no maior tamanho: nunca amplia pixels
       c.aparelho.style.setProperty("--w", `${n(base, 1)}px`);
       c.sA = deitado / base;
@@ -260,7 +265,7 @@
     medir(c) {
       // Largura de cada botão fechado, para a abertura animar de pílula a cartão.
       c.lista.forEach((li) => { li.style.removeProperty("--fechado"); });
-      if (estreito()) return;
+      if (emFileira()) return;
       c.lista.forEach((li) => {
         const botao = $("button", li);
         botao.style.width = "max-content";
@@ -282,7 +287,8 @@
       });
       c.aparelho.brilho(-0.5 + deriva + c.impulso / 40);
       c.lista.forEach((li, i) => definir(li, "--surge", calmo ? 1 : n(suave(trecho(p, 0.07 + i * 0.012, 0.14 + i * 0.012)), 3)));
-      c.ativar(limitar(Math.floor(trecho(p, 0.16, 1) * c.lista.length - 1e-6), 0, c.lista.length - 1));
+      // Parada, a escolha é da pessoa (um redesenho não pode desfazer o recurso que ela abriu).
+      if (!calmo) c.ativar(limitar(Math.floor(trecho(p, 0.16, 1) * c.lista.length - 1e-6), 0, c.lista.length - 1));
       if (c.video && c.faixa && c.video.currentTime >= c.faixa[1]) irPara(c.video, c.faixa[0]);
     },
   });
@@ -296,14 +302,30 @@
       c.itens = [$(".rota__resumo", c.el), ...$$(".rota__fatos li", c.el)];
       c.titulo = $(".rota__titulo", c.el);
       c.veu = $(".rota__veu", c.el);
+      c.fatos = $(".rota__fatos", c.el);
     },
     medir(c) {
+      c.aparelho.style.removeProperty("--w");
+      if (estreito()) {
+        // No celular os fatos ocupam o pé da tela: o aparelho é medido para caber no vão acima deles,
+        // entre a barra do topo (ou o título, quando a cena está parada) e o primeiro fato.
+        const topo = calmo ? c.titulo.offsetTop + c.titulo.offsetHeight + 14 : 76;
+        const vao = c.fatos.offsetTop - 18 - topo;
+        const w = limitar((vao * 0.95) / 2.0826, 90, Math.min(vw * 0.5, 330));
+        c.aparelho.style.setProperty("--w", `${n(w, 1)}px`);
+        c.dy = topo + vao / 2 - c.alt / 2;
+      } else {
+        // Janela baixa: o aparelho desce para sair de baixo da barra do topo e, se preciso, encolhe.
+        const vao = c.alt - 74 - 12;
+        const h = c.aparelho.offsetHeight;
+        if (h > vao) c.aparelho.style.setProperty("--w", `${n(vao / 2.0826, 1)}px`);
+        c.dy = Math.max(0, 74 - (c.alt - Math.min(h, vao)) / 2);
+      }
       const w = c.aparelho.offsetWidth;
       c.telaAlt = w * 0.93 * (2532 / 1170);
       // Escala em que só a tela do app cabe na janela (a moldura fica de fora).
       c.cheio = Math.max(vw / (w * 0.93), c.alt / c.telaAlt) * 1.05;
       c.dx = estreito() ? 0 : -Math.min(vw * 0.2, 290);
-      c.dy = estreito() ? -c.alt * 0.135 : 0;
     },
     entrar(c) { tocar(c.video); },
     sair(c) { parar(c.video); },
@@ -388,6 +410,21 @@
       // No desktop o desenho fica à direita (o texto ocupa a esquerda); no celular, em cima.
       c.geral = estreito() ? enquadrar(c.rede, 1.12, 0, 0.14) : enquadrar(c.rede, 1.5, 0.17, 0);
       c.perto = estreito() ? enquadrar(c.caixaRota, 1.5, 0, 0.16) : enquadrar(c.caixaRota, 2.6, 0.2, 0);
+      c.palco.style.removeProperty("--veu");
+      c.palco.style.removeProperty("--veu-topo");
+      if (!estreito()) return;
+      if (calmo) c.palco.style.setProperty("--veu-topo", `${n(c.titulo.offsetTop + c.titulo.offsetHeight + 6, 1)}px`);
+      // No celular o texto fica embaixo e a altura dele muda com a tela: a rota é encaixada no vão
+      // entre a barra do topo e a leitura, e o escuro de baixo cobre exatamente o texto.
+      // (Parada, a cena mostra o título em cima e a leitura embaixo ao mesmo tempo.)
+      const textoTopo = calmo ? c.leitura.offsetTop : Math.min(c.leitura.offsetTop, c.titulo.offsetTop);
+      c.palco.style.setProperty("--veu", `${n(c.alt - textoTopo + 10, 1)}px`);
+      const r = { x0: 20, x1: vw - 20, y0: calmo ? c.titulo.offsetTop + c.titulo.offsetHeight + 10 : 84, y1: c.leitura.offsetTop - 22 };
+      const b = c.caixaRota;
+      r.y1 = Math.max(r.y1, r.y0 + 80); // tela muito baixa: melhor a rota sob o escuro do que escala negativa
+      const esc = Math.min((r.x1 - r.x0) / ((b.x1 - b.x0) * 1.18), (r.y1 - r.y0) / ((b.y1 - b.y0) * 1.18));
+      const ox = (vw / 2 - (r.x0 + r.x1) / 2) / esc, oy = (c.alt / 2 - (r.y0 + r.y1) / 2) / esc;
+      c.perto = { cx: (b.x0 + b.x1) / 2 + ox, cy: (b.y0 + b.y1) / 2 + oy, w: vw / esc, ox, oy };
     },
     quadro(p, agora, c) {
       if (!c.D) return;
@@ -727,6 +764,8 @@
     for (const l of luzes) l.topo = l.el.getBoundingClientRect().top + y - (1 - l.v) * 22;
     for (const s of sobe) { const r = s.el.getBoundingClientRect(); s.topo = r.top + y; s.alt = r.height; }
     alturaPagina = Math.max(1, raiz.scrollHeight - vh);
+    // Parada, cada cena é desenhada só aqui: a cada nova medida (fonte carregada, tela girada), de novo.
+    if (calmo) for (const c of cenas) { c.visivel = true; c.quadro(c.estatico ?? 1, performance.now(), c, 16); }
   }
 
   let anterior = performance.now();
@@ -774,8 +813,7 @@
   for (const c of cenas) c.montar?.(c);
   medir();
   if (calmo) {
-    // Sem rolagem conduzindo nada: cada cena fica no seu melhor quadro parado.
-    for (const c of cenas) { c.visivel = true; c.quadro(c.estatico ?? 1, performance.now(), c, 16); }
+    // Sem rolagem conduzindo nada: cada cena fica no seu melhor quadro parado (desenhado em medir()).
     explorar?.ativar(0);
     temas?.aplicar(0);
     luzes.forEach((l) => surgir(l.el, 1, 0));
